@@ -17,7 +17,7 @@ class PlanningItem(scrapy.Item):
     origin = scrapy.Field()
     distribution = scrapy.Field()
     editor = scrapy.Field()
-    release = scrapy.Field()
+    releaseDate = scrapy.Field()
     category = scrapy.Field()
     season = scrapy.Field()
     link = scrapy.Field()

@@ -1,4 +1,3 @@
-from unicodedata import category
 import scrapy
 from scrapy import Request
 from icotaku.items import PlanningItem
@@ -9,12 +8,15 @@ class PlanningSpider(scrapy.Spider):
     name = 'planning'
     allowed_domains = ['www.icotaku.com']
 
+    Database.connectDb()
+    Database.createTablePlanning()
+        
     #Liste des pages à collecter
-    # start_urls = np.array([[f'https://anime.icotaku.com/planning/planningSaisonnier/saison/{i}/annee/{n}' for i in ['hiver','printemps','ete','automne']] for n in range(2015,2023)])
-    # start_urls = start_urls.flatten()
-    # start_urls = list(start_urls)
+    start_urls = np.array([[f'https://anime.icotaku.com/planning/planningSaisonnier/saison/{i}/annee/{n}' for i in ['hiver','printemps','ete','automne']] for n in range(2022,2023)])
+    start_urls = start_urls.flatten()
+    start_urls = list(start_urls)
 
-    start_urls = [f'https://anime.icotaku.com/planning/planningSaisonnier/saison/automne/annee/2022']
+    # start_urls = [f'https://anime.icotaku.com/planning/planningSaisonnier/saison/automne/annee/2022']
 
     def start_requests(self):
         for url in self.start_urls:
@@ -51,9 +53,9 @@ class PlanningSpider(scrapy.Spider):
               item['editor'] = 'None'
 
           try: 
-              item['release'] = " ".join(animes.css('span.date::text')[i].extract().strip().split())
+              item['releaseDate'] = " ".join(animes.css('span.date::text')[i].extract().strip().split())
           except:
-              item['release'] = 'None'
+              item['releaseDate'] = 'None'
           
           try: 
               item['category'] = animes.css('h2::text').get()
@@ -69,5 +71,7 @@ class PlanningSpider(scrapy.Spider):
               item['link'] = animes.css('th.titre > a::attr(href)')[i].extract().replace('/anime','https://anime.icotaku.com/anime')
           except:
               item['link'] = 'None'
+
+          Database.addRowPlanning(item)
           
           yield item

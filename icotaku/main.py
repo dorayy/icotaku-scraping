@@ -1,5 +1,8 @@
 import os
 import sys
 
-# execute ls command
-os.system('cd spiders/ && scrapy crawl planningContent -o ../export/planningContent.csv')
+# execute les commandes
+os.system('cd spiders')
+os.system('scrapy crawl planning -o ../export/planning.csv')
+os.system('scrapy crawl planningContent -o ../export/planningContent.csv')
+

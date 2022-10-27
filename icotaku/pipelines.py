@@ -24,7 +24,7 @@ class Database:
             database="icotaku"
         )
         mycursor = mydb.cursor()
-        mycursor.execute("CREATE TABLE IF NOT EXISTS Planning (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, title VARCHAR(255), origin VARCHAR(255), distribution VARCHAR(255), editor VARCHAR(255), releaseDate DATE, category VARCHAR(255), season VARCHAR(255), link VARCHAR(255));")
+        mycursor.execute("CREATE TABLE IF NOT EXISTS Planning (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, title VARCHAR(255), origin VARCHAR(255), distribution VARCHAR(255), editor VARCHAR(255), releaseDate VARCHAR(255), category VARCHAR(255), season VARCHAR(255), link VARCHAR(255));")
 
     def createTablePlanningContent():
         mydb = mysql.connector.connect(
@@ -45,8 +45,8 @@ class Database:
             database="icotaku"
         )
         mycursor = mydb.cursor()
-        sql = "INSERT INTO Planning (title, description, origin, distribution, editor, releaseDate, category, season, link) VALUES (%s, %s, %s, %s, %s, %s, %s, %s , %s)"
-        val = (item['title'], item['description'], item['origin'], item['distribution'], item['editor'], item['releaseDate'], item['category'], item['season'], item['link'])
+        sql = "INSERT INTO Planning (title, origin, distribution, editor, releaseDate, category, season, link) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        val = (item['title'], item['origin'], item['distribution'], item['editor'], item['releaseDate'], item['category'], item['season'], item['link'])
         mycursor.execute(sql, val)
         mydb.commit()
 
