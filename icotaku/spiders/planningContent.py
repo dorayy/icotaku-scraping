@@ -8,7 +8,7 @@ class PlanningcontentSpider(scrapy.Spider):
     allowed_domains = ['anime.icotaku.com']
 
     Database.connectDb()
-    Database.createTable()
+    Database.createTablePlanningContent()
 
     # On récupère les infos de la bdd
     urls = Database.getPlanningUrls()
