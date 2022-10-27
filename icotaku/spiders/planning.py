@@ -13,7 +13,7 @@ class PlanningSpider(scrapy.Spider):
     start_urls = np.array([[f'https://anime.icotaku.com/planning/planningSaisonnier/saison/{i}/annee/{n}' for i in ['hiver','printemps','ete','automne']] for n in range(2015,2023)])
     start_urls = start_urls.flatten()
     start_urls = list(start_urls)
-    print(start_urls)
+    #print(start_urls)
 
     def start_requests(self):
         for url in self.start_urls:
@@ -23,7 +23,6 @@ class PlanningSpider(scrapy.Spider):
     def parse(self, response):
         liste_anime = response.css('div.planning_saison')
         category = response.css('div.planning_saison').css('div.categorie > h2::text').extract()
-        season = 
         
         for anime in liste_anime:
             item = PlanningItem()
