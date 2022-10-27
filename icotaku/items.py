@@ -21,6 +21,7 @@ class PlanningItem(scrapy.Item):
     release = scrapy.Field()
     category = scrapy.Field()
     season = scrapy.Field()
+    link = scrapy.Field()
 
 #À ajouter au fichier items.py
 class PlanningDetailItem(scrapy.Item):

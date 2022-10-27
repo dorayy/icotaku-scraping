@@ -10,69 +10,64 @@ class PlanningSpider(scrapy.Spider):
     allowed_domains = ['www.icotaku.com']
 
     #Liste des pages à collecter
-    start_urls = np.array([[f'https://anime.icotaku.com/planning/planningSaisonnier/saison/{i}/annee/{n}' for i in ['hiver','printemps','ete','automne']] for n in range(2015,2023)])
-    start_urls = start_urls.flatten()
-    start_urls = list(start_urls)
-    print(start_urls)
+    # start_urls = np.array([[f'https://anime.icotaku.com/planning/planningSaisonnier/saison/{i}/annee/{n}' for i in ['hiver','printemps','ete','automne']] for n in range(2015,2023)])
+    # start_urls = start_urls.flatten()
+    # start_urls = list(start_urls)
+
+    start_urls = [f'https://anime.icotaku.com/planning/planningSaisonnier/saison/automne/annee/2022']
 
     def start_requests(self):
         for url in self.start_urls:
             yield Request(url=url, callback=self.parse)
-        
-        
+
     def parse(self, response):
-        liste_anime = response.css('div.planning_saison')
-        category = response.css('div.planning_saison').css('div.categorie > h2::text').extract()
-        season = 
-        
-        for anime in liste_anime:
-            item = PlanningItem()
-            
-            
-            item['category'] = anime.css('div.categorie > h2::text').get()
-            print("Categorie :" ,  item['category'])
+      liste_anime = response.css('div.planning_saison')
+      category = liste_anime.css('div.categorie')
+      season = response.css('h2.planning_title > span::text')[2].extract().split('\xa0\n')[1].strip(' ')
 
-            # #indice boursier
-            # try: 
-            #   item['indice'] = indices.css('td.c-table__cell.c-table__cell--dotted.u-text-uppercase').css('a::text').get()
-            # except:
-            #   item['indice'] = 'None'
-            
-            # #indice cours de l'action
-            # try: 
-            #   item['cours'] = indices.css('span.c-instrument.c-instrument--last::text').get()
-            # except:item['cours'] = 'None'
-            
-            # #Variation de l'action
-            # try: 
-            #   item['var'] = indices.css('span.c-instrument.c-instrument--instant-variation::text').get()
-            # except:
-            #   item['var'] = 'None'
-            
-            # #Valeur la plus haute
-            # try: 
-            #   item['hight'] = indices.css('span.c-instrument.c-instrument--high::text').get()
-            # except:
-            #   item['hight'] = 'None'
-            
-            # #Valeur la plus basse
-            # try: 
-            #   item['low'] = indices.css('span.c-instrument.c-instrument--low::text').get()
-            # except:
-            #   item['low'] = 'None'
+      for animes in category:
+        item = PlanningItem()
+        nb_anime_in_category = len(animes.css('table').extract())
 
-            # #Valeur d'ouverture
-            # try: 
-            #   item['open_'] = indices.css('span.c-instrument.c-instrument--open::text').get()
-            # except:
-            #   item['open_'] = 'None'
+        for i in range(nb_anime_in_category):
+          try: 
+              item['title'] = animes.css('th.titre > a::text')[i].extract().strip()
+          except:
+              item['title'] = 'None'
+          
+          try: 
+              item['origin'] = animes.css('span.origine::text')[i].extract().strip()
+          except:
+              item['origin'] = 'None'
+          
+          try: 
+              item['distribution'] = animes.css('span.editeur::text')[i].extract().strip()
+          except:
+              item['distribution'] = 'None'
+          
+          try: 
+              item['editor'] = animes.css('span.studio::text')[i].extract().strip()
+          except:
+              item['editor'] = 'None'
 
-            # #Date de la collecte
-            # try: 
-            #   item['time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # except:
-            #   item['time'] = 'None'
+          try: 
+              item['release'] = " ".join(animes.css('span.date::text')[i].extract().strip().split())
+          except:
+              item['release'] = 'None'
+          
+          try: 
+              item['category'] = animes.css('h2::text').get()
+          except:
+              item['category'] = 'None'
 
-            # self.pipeline.process_item_boursorama(item)
-
-            # yield item
+          try: 
+              item['season'] = season
+          except:
+              item['season'] = 'None'
+          
+          try:
+              item['link'] = animes.css('th.titre > a::attr(href)')[i].extract().replace('/anime','https://anime.icotaku.com/anime')
+          except:
+              item['link'] = 'None'
+          
+          yield item
