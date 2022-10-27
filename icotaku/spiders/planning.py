@@ -1,6 +1,8 @@
+from unicodedata import category
 import scrapy
 from scrapy import Request
 from icotaku.items import PlanningItem
+from icotaku.pipelines import Database
 import numpy as np
 
 class PlanningSpider(scrapy.Spider):
@@ -19,54 +21,58 @@ class PlanningSpider(scrapy.Spider):
         
         
     def parse(self, response):
-        liste_anime = response.css('tr.c-table__row')[1:]
-        categorie = 
+        liste_anime = response.css('div.planning_saison')
+        category = response.css('div.planning_saison').css('div.categorie > h2::text').extract()
         season = 
         
-        for indices in liste_indices:
+        for anime in liste_anime:
             item = PlanningItem()
             
-            #indice boursier
-            try: 
-              item['indice'] = indices.css('td.c-table__cell.c-table__cell--dotted.u-text-uppercase').css('a::text').get()
-            except:
-              item['indice'] = 'None'
             
-            #indice cours de l'action
-            try: 
-              item['cours'] = indices.css('span.c-instrument.c-instrument--last::text').get()
-            except:item['cours'] = 'None'
+            item['category'] = anime.css('div.categorie > h2::text').get()
+            print("Categorie :" ,  item['category'])
+
+            # #indice boursier
+            # try: 
+            #   item['indice'] = indices.css('td.c-table__cell.c-table__cell--dotted.u-text-uppercase').css('a::text').get()
+            # except:
+            #   item['indice'] = 'None'
             
-            #Variation de l'action
-            try: 
-              item['var'] = indices.css('span.c-instrument.c-instrument--instant-variation::text').get()
-            except:
-              item['var'] = 'None'
+            # #indice cours de l'action
+            # try: 
+            #   item['cours'] = indices.css('span.c-instrument.c-instrument--last::text').get()
+            # except:item['cours'] = 'None'
             
-            #Valeur la plus haute
-            try: 
-              item['hight'] = indices.css('span.c-instrument.c-instrument--high::text').get()
-            except:
-              item['hight'] = 'None'
+            # #Variation de l'action
+            # try: 
+            #   item['var'] = indices.css('span.c-instrument.c-instrument--instant-variation::text').get()
+            # except:
+            #   item['var'] = 'None'
             
-            #Valeur la plus basse
-            try: 
-              item['low'] = indices.css('span.c-instrument.c-instrument--low::text').get()
-            except:
-              item['low'] = 'None'
+            # #Valeur la plus haute
+            # try: 
+            #   item['hight'] = indices.css('span.c-instrument.c-instrument--high::text').get()
+            # except:
+            #   item['hight'] = 'None'
+            
+            # #Valeur la plus basse
+            # try: 
+            #   item['low'] = indices.css('span.c-instrument.c-instrument--low::text').get()
+            # except:
+            #   item['low'] = 'None'
 
-            #Valeur d'ouverture
-            try: 
-              item['open_'] = indices.css('span.c-instrument.c-instrument--open::text').get()
-            except:
-              item['open_'] = 'None'
+            # #Valeur d'ouverture
+            # try: 
+            #   item['open_'] = indices.css('span.c-instrument.c-instrument--open::text').get()
+            # except:
+            #   item['open_'] = 'None'
 
-            #Date de la collecte
-            try: 
-              item['time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            except:
-              item['time'] = 'None'
+            # #Date de la collecte
+            # try: 
+            #   item['time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # except:
+            #   item['time'] = 'None'
 
-            self.pipeline.process_item_boursorama(item)
+            # self.pipeline.process_item_boursorama(item)
 
-            yield item
+            # yield item
