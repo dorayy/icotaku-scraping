@@ -14,7 +14,6 @@ class IcotakuItem(scrapy.Item):
 #À ajouter au fichier items.py
 class PlanningItem(scrapy.Item):
     title = scrapy.Field()
-    desc = scrapy.Field()
     origin = scrapy.Field()
     distribution = scrapy.Field()
     editor = scrapy.Field()
